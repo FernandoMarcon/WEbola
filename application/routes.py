@@ -1,41 +1,57 @@
-from flask import jsonify,  request, json, Response, redirect, flash, render_template, url_for
+from flask import jsonify, g, session,request, json, Response, redirect, flash, render_template, url_for
 from application import app 
+from flask_sse import sse
 import json
 
 import plotly
 # import plotly.express as px
 # import pandas as pd
-
+from utils import get_cohort
 from utils import data, plot
+from utils import data_handling as dh
+from utils.settings import *
 
-cohort = "USA"
-timepoint = "Day 1"
+def set_datadir(basedir='data', cohort='USA', dtype='RNASeq'):
+    return '/'.join([basedir, cohort, dtype,''])
 
 
-@app.route('/genes/boxplot/<gene>')
-def genes_boxplot(gene):
+@app.route('/genes/boxplot/<gene>/<cohort>/<timepoint>')
+def genes_boxplot(gene,cohort,timepoint):
+    print(cohort)
+    print(timepoint)
     pheno_var1='treatment'
-    fig = plot.plotGeneExpression(data, gene, pheno_var1)
+    fig = plot.plotGeneExpression(data.data(cohort=cohort,timepoint=timepoint), gene, pheno_var1)
     gene_exprs=json.dumps(fig,cls=plotly.utils.PlotlyJSONEncoder)
     return gene_exprs
 
 
-@app.route('/genes/corr/<gene>')
-def genes_corr(gene):
+@app.route('/genes/corr/<gene>/<cohort>/<timepoint>')
+def genes_corr(gene,cohort,timepoint):
     corr_thrs = 0.8
-    gene_corr = plot.geneCorr(data, gene, corr_thrs)
+    gene_corr = plot.geneCorr(data.data(cohort=cohort,timepoint=timepoint), gene, corr_thrs)
     return gene_corr
 
 
-@app.route('/gene_level_analysis')
+
+@app.route('/gene_level_analysis',methods = ['GET','POST'])
 def gene_level_analysis():
+    try:
+        timepoint = get_cohort.get_cohort()[1].strip()
+        cohort=get_cohort.get_cohort()[0].strip()
+    except:
+        timepoint="D1"
+        cohort="USA"
     
-    volcano = json.dumps(
-            plot.plotVolcano(data.degs, cohort=cohort, timepoint=timepoint),
-            cls=plotly.utils.PlotlyJSONEncoder)
-
+    # print(cohort)
+    # print(timepoint)
+    
+    de_table1 = dh.read_de_table(comp=timepoint, datadir=set_datadir(cohort=cohort),echo=False)
+    
+    volcano=get_cohort.send_data(de_table1,cohort,timepoint)
+    sse.publish(volcano,type='greeting')
     return render_template("gene_level_analysis.html", gene_level_analysis=True, title="Gene-level Analysis", volcano=volcano)
-
+    
+    
 
 @app.route('/reactogenicity')
 def reactogenicity():
@@ -45,59 +61,3 @@ def reactogenicity():
 def immunogenicity():
     return render_template("immunogenicity.html", immunogenicity=True, title="Immunogenicity")
 
-
-# @app.route('/volcano/<cohort>/<tp>/')
-# def sen_volcano_data(cohort=None, tp=None):
-#     cohort = request.get('cohort')
-#     tp = request.get('tp')
-
-#     de_analysis(cohort=cohort, timepoint=tp)
-#     volcano_data = {
-#         'gene':         [],
-#         'logFC':        [],
-#         'FDR':          [],
-#         'direction':    []
-#     }
-
-#     return send_response(200,'volcano', json.dumps(volcano_data), 'Volcano Data Sent!')
-
-# def send_response(code,type,data,msg):
-#     return Response(code, data, mimetype='application/json')
-
-# def gera_response(status, nome_do_conteudo, conteudo, mensagem=False):
-#     body = {}
-#     body[nome_do_conteudo] = conteudo
-
-#     if(mensagem):
-#         body['mensagem'] = mensagem
-    
-#     return Response(json.dumps(body), status=status, mimetype="application/json")
-# class rnaseq_corr_matrix(db.Model):
-#     id = db.Column(db.Integer, primary_key=True, unique=True)
-#     source = db.Column(db.String)
-#     target = db.Column(db.String)
-#     rho = db.Column(db.Float)
-#     cohort = db.Column(db.String)
-
-#     def to_json(self):
-#         return {
-#             # 'id': self.id,
-#             'source': self.source,
-#             'target': self.target,
-#             'rho': self.rho,
-#             # 'cohort': self.cohort
-#         }
-
-# @app.route('/corr/')
-# @app.route('/corr/<cohort>/<gene>')
-# def get_gene_corr(cohort=None, gene=None):
-#     # cohort = 'USA'
-#     # gene = 'AAGAB'
-#     data_obj = rnaseq_corr_matrix.query.filter_by(cohort=cohort).filter_by(source=gene).all()
-#     data_json = [data.to_json() for data in data_obj]
-#     return gera_response(200, "gene_corr", data_json, 'message')
-
-
-# @app.route('/corr-net')
-# def corr_net():
-#     return render_template('corr_net.html')

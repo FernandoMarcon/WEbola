@@ -2,21 +2,22 @@ function plotVolcano(graphs) {
   var myPlot = Plotly.plot("volcano-plot", graphs, { displaylogo: false });
 }
 
-function plotGeneExpression(gene_name) {
+function plotGeneExpression(gene_name,cohort,timepoint) {
   const div_name = "gene-boxplot-plot";
-  fetch("genes/boxplot/" + gene_name)
+  console.log("genes/boxplot/" + gene_name+"/"+cohort+"/"+timepoint)
+  fetch("genes/boxplot/" + gene_name+"/"+cohort+"/"+timepoint)
     .then((response) => response.json())
     .then((data) => {
       Plotly.plot(div_name, data, {});
     });
 }
 
-function plotGeneNetwork(gene_name) {
+function plotGeneNetwork(gene_name,cohort,timepoint) {
   const div_name = "gene-corr-plot";
   // const cohort = "Geneva"
 
   // fetch(`/corr/${cohort}/${gene_name}`)
-  fetch("/genes/corr/" + gene_name)
+  fetch("/genes/corr/" + gene_name+"/"+cohort+"/"+timepoint)
     .then((response) => response.json())
     .then((data) => {
       var chart = anychart.graph(data);
@@ -44,4 +45,9 @@ function plotGeneNetwork(gene_name) {
       chart.credits(false);
       chart.fit().draw();
     });
+}
+
+dict_day={
+  "USA":["D1","D2","D3","D7"],
+  "Geneva":["D1","D2","D3","D7","D14","D21","D28","D35"]
 }

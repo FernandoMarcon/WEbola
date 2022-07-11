@@ -3,26 +3,32 @@ from utils.settings import *
 import pandas as pd
 import os
 
-#### RNASeq
-print('\n\ndata - loading RNASeq data')
+class data:
 
-#--- Expression/Pheno Data
-exprs = pd.read_table('data/Geneva/RNASeq/Geneva_counts.tsv', index_col='genes')
-pheno = pd.read_table('data/Geneva/RNASeq/Geneva_pheno.tsv', index_col='sample_id')
-print('data - loaded: pheno')
-
-#--- DE Analysis Data
-de_table = dh.read_de_table(comp=defaults['comp'], datadir=settings['datadir'],echo=False)
-print('data - loaded: DE Table')
-
-# print("DEG Table: ")
-degs = dh.prep_volcano(de_table)
-print('data - loaded: degs')
-
-#--- Gene Correlation Data
-data_corr = exprs.loc[degs[degs['DEG'] == 'Up'].index].transpose().corr()
-# data_corr = exprs.loc[degs[degs['DEG'] != 'Unchanged'].index].transpose().corr()
-
-print('data - ready!!!\n\n')
-print('\n\n')
-print(data_corr.iloc[:5,:5])
+        def __init__(self, cohort="USA",timepoint="D1"):
+            self.cohort = cohort
+            self.timepoint=timepoint
+            self.exprs,self.pheno=self.expression()
+            self.de_table = self.de()
+            self.degs = self.deg()
+            self.data_corr=self.correlation()
+        
+        def set_datadir(self, basedir='data', cohort='USA', dtype='RNASeq'):
+            return '/'.join([basedir, cohort, dtype,''])
+        
+        def expression(self):
+            exprs = pd.read_table('data/'+self.cohort+'/RNASeq/'+self.cohort+'_counts.tsv', index_col='genes')
+            pheno = pd.read_table('data/'+self.cohort+'/RNASeq/'+self.cohort+'_pheno.tsv', index_col='sample_id')
+            return exprs,pheno
+        
+        def de(self):
+            de_table = dh.read_de_table(comp=self.timepoint, datadir=self.set_datadir(cohort=self.cohort),echo=False)
+            return de_table
+        
+        def deg(self):
+            degs = dh.prep_volcano(self.de_table)
+            return degs
+        
+        def correlation(self):
+            data_corr = self.exprs.loc[self.degs[self.degs['DEG'] == 'Up'].index].transpose().corr()
+            return data_corr

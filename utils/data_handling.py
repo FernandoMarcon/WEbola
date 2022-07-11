@@ -7,6 +7,7 @@ import os
 def read_data(cohort, ftype, datadir, index_col=0):
     print('File type: '+ftype)
     fname = cohort+'_'+ftype+'.tsv'
+    print(fname)
     input_fname = '/'.join([datadir,fname])
     data = pd.read_table(input_fname, index_col=index_col)
     return data

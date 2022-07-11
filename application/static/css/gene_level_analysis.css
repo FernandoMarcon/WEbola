@@ -33,7 +33,7 @@
     width: 100%;
     display: flex;
     align-items: center;
-    justify-content: center;
+    justify-content: flex-end;
   }
   .gene_level_analysis-genelevelanalysis {
     color: #ffffff;
@@ -84,6 +84,7 @@
   .gene_level_analysis-page-ttitle {
     font-size: 2em;
     margin-top: var(--dl-space-space-halfunit);
+    margin-bottom: 1rem;
   }
   .gene_level_analysis-main-menu-row {
     flex: 0 0 auto;
@@ -230,6 +231,7 @@
     margin-left: var(--dl-space-space-halfunit);
     margin-right: var(--dl-space-space-halfunit);
     margin-bottom: var(--dl-space-space-halfunit);
+    padding-bottom: var(--dl-space-space-halfunit);
     justify-content: space-between;
   }
   .gene_level_analysis-search-gene {
@@ -335,6 +337,15 @@
     align-self: center;
     text-align: center;
   }
+
+#enviar:hover {background-color: white}
+
+#enviar:active {
+ 
+  box-shadow: 0 5px #666;
+  transform: translateY(4px);
+}
+
   @media(max-width: 767px) {
     .gene_level_analysis-navbar {
       padding-left: var(--dl-space-space-twounits);
