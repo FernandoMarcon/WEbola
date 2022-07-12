@@ -16,4 +16,4 @@ gunicorn -b 127.0.0.1:8000 main:app --worker-class gevent;2D
 
 
 ```
-Open http://localhost:5000/gene_level_analsys
+Open http://localhost:8000/gene_level_analsys
