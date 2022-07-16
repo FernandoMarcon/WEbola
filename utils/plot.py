@@ -4,7 +4,7 @@ import plotly.graph_objects as go
 from math import log10
 
 def plotVolcano(data,
-                fc_thrs=0, pval_thrs=0.01,
+                fc_thrs=1, pval_thrs=0.01,
                 cohort="USA", timepoint="Day 1",
                 xlab="Log2 fold-change threshold", ylab='-log10 [FDR]'):
     

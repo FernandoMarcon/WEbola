@@ -1,5 +1,5 @@
 function plotVolcano(graphs) {
-  var myPlot = Plotly.plot("volcano-plot", graphs, { displaylogo: false });
+  Plotly.plot("volcano-plot", graphs, {});
 }
 
 function plotGeneExpression(gene_name,cohort,timepoint) {
@@ -9,17 +9,21 @@ function plotGeneExpression(gene_name,cohort,timepoint) {
     .then((response) => response.json())
     .then((data) => {
       Plotly.plot(div_name, data, {});
+      document.querySelector('.gene_level_analysis-content-gif-expression').style.display='none';
+      document.querySelector('.gene_level_analysis-gene-exprs-plot').style.opacity=1;
     });
 }
 
 function plotGeneNetwork(gene_name,cohort,timepoint) {
   const div_name = "gene-corr-plot";
-  // const cohort = "Geneva"
-
-  // fetch(`/corr/${cohort}/${gene_name}`)
   fetch("/genes/corr/" + gene_name+"/"+cohort+"/"+timepoint)
     .then((response) => response.json())
     .then((data) => {
+      console.log(data)
+      if(data['error']){
+        document.querySelector('.gene_level_analysis-content-gif-ntw').style.display='none';
+      }
+      else{
       var chart = anychart.graph(data);
       chart.container(div_name);
 
@@ -44,7 +48,12 @@ function plotGeneNetwork(gene_name,cohort,timepoint) {
       chart.interactivity().scrollOnMouseWheel(true);
       chart.credits(false);
       chart.fit().draw();
+      document.querySelector('.gene_level_analysis-content-gif-ntw').style.display='none';
+      document.querySelector('#gene-corr-plot').style.opacity=1;
+      }
     });
+    
+      
 }
 
 dict_day={

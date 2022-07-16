@@ -67,7 +67,7 @@ def add_degs(de_table, pval_col='PValue', fc_col='logFC', pval_thrs=0.01, fc_thr
             axis=1)
     return de_table
 
-def prep_volcano(de_table, pval_col='PValue', fc_col='logFC', pval_thrs=0.01, fc_thrs=0):
+def prep_volcano(de_table, pval_col='PValue', fc_col='logFC', pval_thrs=0.01, fc_thrs=1):
     degs = add_degs(de_table, pval_col=pval_col, fc_col=fc_col, pval_thrs=pval_thrs, fc_thrs=fc_thrs)
     degs['logP'] = degs[pval_col].apply(lambda x: -log10(x))
     degs['score'] = [abs(i) for i in degs[fc_col] * degs['logP']]

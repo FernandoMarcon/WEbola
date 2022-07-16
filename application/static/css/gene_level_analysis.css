@@ -1,4 +1,7 @@
-.gene_level_analysis-container {
+  p{
+    font-weight: bold;
+  }
+  .gene_level_analysis-container {
     width: 100%;
     display: flex;
     overflow: auto;
@@ -118,16 +121,40 @@
     flex: 1;
     width: 100%;
     height: 100%;
-    display: flex;
+    display: none;
     align-items: stretch;
     flex-direction: row;
     justify-content: center;
+  }
+  .gene_level_analysis-content-gif{
+    display: none;
+  }
+  .gene_level_analysis-content-gif-expression {
+    display: none;
+    z-index: 300;
+    width: 100%;
+    height: 100%;
+    justify-content: center;
+    align-items: center;
+  }
+  .js-plotly-plot{
+    display:flex;
+    align-items: center;
+  }
+  .gene_level_analysis-content-gif-ntw {
+    display: none;
+    z-index: 300;
+    width: 100%;
+    height: 100%;
+    justify-content: center;
+    align-items: center;
   }
   .gene_level_analysis-volcano {
     flex: 1;
     width: 200px;
     display: flex;
-    align-items: flex-start;
+    align-items: center;
+    justify-content: center;
     padding-top: 0px;
     margin-right: var(--dl-space-space-halfunit);
     padding-left: var(--dl-space-space-halfunit);
@@ -187,15 +214,13 @@
   .gene_level_analysis-volcano-plot {
     flex: 1;
     width: 100%;
-    height: 100px;
+    height: 100%;
     display: flex;
-    box-shadow: 2px 2px 10px 5px #999999;
     margin-top: 0px;
     align-items: flex-start;
     margin-left: var(--dl-space-space-halfunit);
     padding-top: 0px;
     margin-right: var(--dl-space-space-halfunit);
-    padding-left: var(--dl-space-space-halfunit);
     border-radius: var(--dl-radius-radius-radius8);
     margin-bottom: 0px;
     padding-right: var(--dl-space-space-halfunit);
@@ -264,7 +289,6 @@
     margin-left: var(--dl-space-space-halfunit);
     padding-top: 0px;
     margin-right: var(--dl-space-space-halfunit);
-    padding-left: var(--dl-space-space-halfunit);
     border-radius: var(--dl-radius-radius-radius8);
     margin-bottom: 0px;
     padding-right: var(--dl-space-space-halfunit);
@@ -287,7 +311,7 @@
     width: 100%;
     margin: var(--dl-space-space-halfunit);
     display: flex;
-    padding: 0px;
+    padding: var(--dl-space-space-halfunit);
     align-self: flex-start;
     align-items: center;
   }
@@ -309,7 +333,6 @@
     margin-left: var(--dl-space-space-halfunit);
     padding-top: 0px;
     margin-right: var(--dl-space-space-halfunit);
-    padding-left: var(--dl-space-space-halfunit);
     border-radius: var(--dl-radius-radius-radius8);
     margin-bottom: 0px;
     padding-right: var(--dl-space-space-halfunit);
@@ -337,16 +360,72 @@
     align-self: center;
     text-align: center;
   }
-
-#enviar:hover {background-color: white}
-
-#enviar:active {
+  #enviar{
+  background-color: #F7601B;
+  color: white;
+  }
+  #enviar:hover {
+  background-color: #F7601B
+  }
+  #enviar:active {
  
   box-shadow: 0 5px #666;
   transform: translateY(4px);
-}
+  }
+  .antes,.depois{
+  display:flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  }
 
-  @media(max-width: 767px) {
+  #gerar, #update-cohort{
+  background-color: #F7601B;
+  color: white;
+  opacity: 0.4;
+  }
+  #gerar:active {
+
+  box-shadow: 0 5px #666;
+  transform: translateY(4px);
+  }
+  #update-cohort:active{
+    box-shadow: 0 5px #666;
+    transform: translateY(4px);
+  }
+
+  #volcano-plot{
+    width: 100%;
+    max-width: 500px;
+    height: 100%;
+    min-height: 400px;
+    display: flex;
+    justify-content: center;
+  }
+  @media(max-width: 1100px) {
+    .gene_level_analysis-content{
+      flex-direction: column;
+      width: 100%;
+      padding-left: 0;
+    }
+    .gene_level_analysis-volcano-plot{
+      align-items: center;
+      margin-left: 0;
+      box-shadow:none;
+    }
+    .gene_level_analysis-gene{
+      width: 100%;
+      padding-left: 0; 
+    }
+    .gene_level_analysis-volcano{
+      width: 100%;
+      padding-left: 0;
+      height: 100vh;
+   
+    }
+    .gene_level_analysis-gene-exprs{
+      padding: 0;
+    }
     .gene_level_analysis-navbar {
       padding-left: var(--dl-space-space-twounits);
       padding-right: var(--dl-space-space-twounits);
@@ -364,22 +443,37 @@
       margin-left: var(--dl-space-space-unit);
       margin-right: var(--dl-space-space-unit);
     }
-  }
-  @media(max-width: 479px) {
-    .gene_level_analysis-navbar {
-      padding: var(--dl-space-space-unit);
+    .gene_level_analysis-gene-exprs-plot{
+      margin-left: 0;
+      box-shadow:none;
+
     }
-    .gene_level_analysis-title-menu {
-      padding: var(--dl-space-space-unit);
-    }
-    .gene_level_analysis-footer {
-      padding: var(--dl-space-space-unit);
+    .gene_level_analysis-main-menu-group{
       flex-direction: column;
     }
-    .gene_level_analysis-rights {
-      margin-left: 0px;
-      margin-right: 0px;
-      margin-bottom: var(--dl-space-space-unit);
+    button{
+      margin-left: 0;
+    }
+    .gene_level_analysis-gene-corr-plot{
+      margin-left: 0;
+      box-shadow:none;
+
+    }
+    .gene_level_analysis-button1{
+      margin-left: 0;
+    }
+    .gene_level_analysis-text7{
+      margin-left: 0;
+    }
+    /* #volcano-plot{
+      width:100vw ;
+      height: 500px;
+      z-index: 200;
+
+    } */
+    .gene_level_analysis-gene{
+      display: none;
     }
   }
+
   

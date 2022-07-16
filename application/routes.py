@@ -28,7 +28,10 @@ def genes_boxplot(gene,cohort,timepoint):
 @app.route('/genes/corr/<gene>/<cohort>/<timepoint>')
 def genes_corr(gene,cohort,timepoint):
     corr_thrs = 0.8
-    gene_corr = plot.geneCorr(data.data(cohort=cohort,timepoint=timepoint), gene, corr_thrs)
+    try:
+        gene_corr = plot.geneCorr(data.data(cohort=cohort,timepoint=timepoint), gene, corr_thrs)
+    except:
+        gene_corr = {"error":1}
     return gene_corr
 
 

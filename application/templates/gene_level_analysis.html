@@ -5,6 +5,13 @@
   .anychart-credits {
     display: none;
   }
+  select:invalid{
+    color: gray;
+    border:solid #F7601B 1px;
+  }
+  select:valid{
+    border:solid #F7601B 1px;
+  }
 </style>
 
 <script src="{{url_for('static', filename='js/plotly-latest.js')}}"></script>
@@ -13,35 +20,37 @@
 <script src="https://cdn.anychart.com/releases/8.8.0/js/anychart-data-adapter.min.js"></script>
 
 <div data-role="Accordion" class="gene_level_analysis-title-menu">
-  <h1 class="gene_level_analysis-page-ttitle">{{title}}</h1>
   <div class="gene_level_analysis-main-menu-row">
     <div class="gene_level_analysis-main-menu-group">
-      <form>
-        <select id="ddlViewBy" class="gene_level_analysis-button">
-          <option value="Geneva">Geneva</option>
-          <option value="USA" selected="selected">USA</option>
-        </select>
-      </form>
-      <button id="enviar" class="gene_level_analysis-button button" style="border:solid black">
-          Select the cohort
-      </button>
-      <form>
-          <select id="ddlViewBy2" class="gene_level_analysis-button">
-            <option>Select Day </option> 
+      <div class="antes">
+        <p>Cohort</p>
+        <form>
+          <select id="ddlViewBy" class="gene_level_analysis-button" required>
+            <option value="" disabled selected hidden  >Select cohort</option>
+            <option value="Geneva">Geneva</option>
+            <option value="USA">USA</option>
           </select>
         </form>
-      <button id="gerar" class="gene_level_analysis-button1 button"style="border:solid black">
+      </div>
+      <div class="depois">
+        <p>Day</p>
+        <form>
+            <select id="ddlViewBy2" class="gene_level_analysis-button" required>
+              <option value="" disabled selected hidden  >Select day</option>
+            </select>
+          </form>
+      </div>
+      <button disabled="true" id="gerar" class="gene_level_analysis-button1 button">
         Generate view
       </button>
     </div>
   </div>
 </div>
-
+<img class='gene_level_analysis-content-gif' src="{{url_for('static', filename='img/loading.gif')}}" class="loading">
 <div class="gene_level_analysis-content">
 
   <!-- VOLCANO -->
   <div class="gene_level_analysis-volcano">
-
     <!-- INPUT -->
     <div class="gene_level_analysis-volcano-input">
 
@@ -60,33 +69,28 @@
     </div>
     <!-- PLOT VOLCANO -->
     <div class="gene_level_analysis-volcano-plot" id="volcano-plot">
-      <!-- <h3 id="volcano-title">Volcano Plot {{ cohort }} {{ timepoint }}</h3> -->
+    
     </div>
 
   </div>
 
   <div class="gene_level_analysis-gene">
 
-
     <!-- GENE EXPRESSION -->
     <div class="gene_level_analysis-gene-exprs">
 
       <!-- Input -->
-      <div class="gene_level_analysis-gene-exprs-input">
-        Click on the Volcano Plot Gene to analyze the expression
-      <h3 id="gene-name"></h3>
-        <div class="gene_level_analysis-search-gene">
-          <svg viewBox="0 0 1024 1024" class="gene_level_analysis-icon2">
-            <path
-              d="M684.416 676.523c-1.451 1.109-2.859 2.347-4.224 3.712s-2.56 2.731-3.712 4.224c-53.675 51.755-126.677 83.541-207.147 83.541-82.475 0-157.099-33.365-211.2-87.467s-87.467-128.725-87.467-211.2 33.365-157.099 87.467-211.2 128.725-87.467 211.2-87.467 157.099 33.365 211.2 87.467 87.467 128.725 87.467 211.2c0 80.469-31.787 153.472-83.584 207.189zM926.165 865.835l-156.8-156.8c52.523-65.707 83.968-149.035 83.968-239.701 0-106.027-43.008-202.069-112.469-271.531s-165.504-112.469-271.531-112.469-202.069 43.008-271.531 112.469-112.469 165.504-112.469 271.531 43.008 202.069 112.469 271.531 165.504 112.469 271.531 112.469c90.667 0 173.995-31.445 239.701-83.968l156.8 156.8c16.683 16.683 43.691 16.683 60.331 0s16.683-43.691 0-60.331z">
-            </path>
-          </svg>
-        </div>
+      <div class="gene_level_analysis-gene-cor-input">
+        Click on the Volcano Plot Gene:
+        <h3 id="gene-name"></h3>
+        <div class="gene_level_analysis-search-gene"></div>
       </div>
-
-
+      <div class="gene_level_analysis-content-gif-expression">
+        <img src="{{url_for('static', filename='img/loading.gif')}}" class="loading">
+      </div>
       <!-- Plot -->
-      <div id="gene-boxplot-plot" class="gene_level_analysis-gene-exprs-plot"></div>
+      <div id="gene-boxplot-plot" class="gene_level_analysis-gene-exprs-plot">
+      </div>
     </div>
 
     <!-- GENE CORRELATION NETWORK -->
@@ -97,41 +101,61 @@
         <span class="gene_level_analysis-text7">|R| threshold</span>
         <!-- Create Range Here -->
       </div>
-
+      <div class="gene_level_analysis-content-gif-ntw">
+        <img src="{{url_for('static', filename='img/loading.gif')}}" class="loading">
+      </div>
       <!-- Plot -->
       <div id="gene-corr-plot" class="gene_level_analysis-gene-corr-plot"></div>
     </div>
+
   </div>
 </div>
 
 <script type="text/javascript" src="{{url_for('static',filename='js/gene_level_analysis.js')}}"></script>
-<script type="text/javascript">
-  botao=document.querySelector("#enviar")
-  botao.addEventListener("click",function(event){
-  var e = document.querySelector("#ddlViewBy");
-  var select = document.querySelector("#ddlViewBy2");
-  var a =dict_day[e.value]
-  var opcoes = select.querySelectorAll('option')
-  for(opcao of opcoes){
-    opcao.remove()
-  }
-  var el = document.createElement("option");
-  el.innerHTML = "Select Day";
-  select.appendChild(el);
 
-  for(elemento of dict_day[e.value]) {
-      var opt = elemento;
-      var el = document.createElement("option");
-      el.innerHTML = opt;
-      el.value = opt;
-      select.appendChild(el);
-  }
-  })
+<script type="text/javascript">
+
+  select1=document.querySelector("#ddlViewBy")
   gerar=document.querySelector("#gerar")
+  depois=document.querySelector(".depois")
+  e1 = document.querySelector("#ddlViewBy");
+  
+  select1.addEventListener("change",function(event){
+    Plotly.purge('volcano-plot');
+    Plotly.purge('gene-boxplot-plot')
+    try{document.querySelector("#gene-corr-plot").querySelector("svg").remove()}catch(e){}
+    document.querySelector('.gene_level_analysis-content').style.display='flex';
+    document.querySelector('.gene_level_analysis-content').style.opacity=0;
+    depois.style.display="flex"
+    gerar.disabled=false;
+    gerar.style.opacity=1;
+    
+    var e = document.querySelector("#ddlViewBy");
+    var select = document.querySelector("#ddlViewBy2");
+    var a =dict_day[e.value]
+    var opcoes = select.querySelectorAll('option')
+    
+    for(opcao of opcoes){
+      opcao.remove()
+    }
+    
+    for(elemento of dict_day[e.value]) {
+        var opt = elemento;
+        var el = document.createElement("option");
+        el.innerHTML = opt;
+        el.value = opt;
+        select.appendChild(el);
+    }
+  })
+ 
   gerar.addEventListener("click",function(event){
     Plotly.purge('volcano-plot');
     Plotly.purge('gene-boxplot-plot')
-    Plotly.purge('gene-corr-plot')
+    try{for(elemento of document.querySelector("#gene-corr-plot").querySelectorAll("svg")){elemento.remove()}}catch(e){}
+    document.querySelector('.gene_level_analysis-content-gif').style.display='block';
+    document.querySelector('.gene_level_analysis-content').style.display='flex';
+    document.querySelector('.gene_level_analysis-content').style.opacity=0;
+    
     var e = document.querySelector("#ddlViewBy");
     var e2 = document.querySelector("#ddlViewBy2");
     var strUser = e.value;
@@ -139,35 +163,56 @@
     const URL = '/gene_level_analysis'
     const xhr = new XMLHttpRequest();
     sender = JSON.stringify([strUser,strUser2])
-    console.log(sender)
     xhr.open('POST', URL);
     xhr.send([sender]);
 
     var source = new EventSource("{{ url_for('sse.stream') }}");
-    source.addEventListener('greeting', function(event) {
-          var data = JSON.parse(event.data);
-          plotVolcano(data);
-          
-          document.getElementById('volcano-plot').on('plotly_click', (data) => {
-            var e = document.querySelector("#ddlViewBy");
-            var e2 = document.querySelector("#ddlViewBy2");
-            var cohort = e.value;
-            var timepoint = e2.value;
-            const gene = data['points'][0]['customdata'][0];
-            console.log(gene)
-            document.getElementById('gene-name').innerText = gene;
-            plotGeneExpression(gene,cohort,timepoint);
-            plotGeneNetwork(gene,cohort,timepoint);
 
-            document.getElementById('gene-corr-plot').innerHTML = '';
+    source.addEventListener('greeting', function(event) {
+          Plotly.purge('volcano-plot');
+          var data = JSON.parse(event.data);
+          document.querySelector('.gene_level_analysis-gene').style.display='flex';
+          document.querySelector('.gene_level_analysis-content').style.display='flex';
+          document.querySelector('.gene_level_analysis-content').style.opacity=0;
+          document.querySelector('.gene_level_analysis-gene').style.display='none';
+          
+          plotVolcano(data);
+
+          document.querySelector('.gene_level_analysis-content-gif').style.display='none';
+          document.querySelector('.gene_level_analysis-content').style.opacity=1;
+          document.querySelector('.gene_level_analysis-gene').style.display='flex';
+
+          document.getElementById('volcano-plot').on('plotly_click', (data) => {
+              
+              Plotly.purge('gene-boxplot-plot')
+              
+              try{for(elemento of document.querySelector("#gene-corr-plot").querySelectorAll("svg")){elemento.remove()}}catch(e){}
+              
+              document.querySelector('.gene_level_analysis-content-gif-expression').style.display='flex';
+              document.querySelector('#gene-boxplot-plot').style.opacity=0;
+              document.querySelector('.gene_level_analysis-content-gif-ntw').style.display='flex';
+              document.querySelector('#gene-corr-plot').style.opacity=0;
+              
+              var e = document.querySelector("#ddlViewBy");
+              var e2 = document.querySelector("#ddlViewBy2");
+              var cohort = e.value;
+              var timepoint = e2.value;
+              const gene = data['points'][0]['customdata'][0];
+          
+              document.getElementById('gene-name').innerText = gene;
+              
+              plotGeneExpression(gene,cohort,timepoint);
+              plotGeneNetwork(gene,cohort,timepoint);
+            
+              document.getElementById('gene-corr-plot').innerHTML = '';
 
           });
     }, false);
-    source.addEventListener('error', function(event) {
-      // console.log(event);
-    }, false);
+    
 
   })
+  
+
 </script>
 
 {% endblock %}
