@@ -2,3 +2,6 @@ flask
 pandas
 plotly
 python-dotenv
+flask-sse
+gunicorn
+gevent
